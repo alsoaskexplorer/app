@@ -1,0 +1,91 @@
+<!-- Include html2canvas for PNG export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+    .table th,
+    .table td {
+        vertical-align: middle;   /* Align content to the center */
+        padding: 1rem;             /* Adds space around text for better readability */
+        font-family: 'Roboto', sans-serif;
+        font-weight: 400;          /* Regular weight for clarity */
+        font-size: 16px;           /* Ideal for readability */
+        line-height: 1.6;          /* Adjusted line height for better spacing */
+        color: #333;               /* Dark text for contrast */
+    }
+
+    /* Optional: Adjust row spacing with padding or margin on tr */
+    .table tr {
+        margin-bottom: 1em;        /* Space between rows */
+    }
+</style>
+
+
+<div class="content-wrapper">
+    <div class="page-header">
+        <h3 class="page-title">AI Generated Response</h3>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Tables</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Basic tables</li>
+            </ol>
+        </nav>
+    </div>
+    <div class="row">
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title text-uppercase" style="font-family: teko; font-weight:700; color: black;">Your SEO Optimised Answer</h4>
+                    <p class="card-description">
+                        <a href="/searchQuestion" class="btn btn-sm btn-primary shadow-sm" target="_blank"><i class="fa-solid fa-user-astronaut"></i> SearchQuestion</a>
+                        <a href="/get-aiGen-answer/<%=query%>" class="btn btn-sm btn-light shadow-sm" target="_blank"><i class="fa-solid fa-globe"></i> reGenerate</a>
+                    </p>
+                    <table id="myTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                        <thead>
+                            <tr class="table-secondary">
+                                <th style="font-family: teko; font-weight: 600; font-size: large; color: black;">Question</th>
+                                <th style="font-family: teko; font-weight: 600; font-size: large; color: black;">AI Powered SEO Optimised Answer</th>
+                                <th style="font-family: teko; font-weight: 600; font-size: large; color: black;"><i class="fa-solid fa-copy"></i> Copy Answer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-wrap"><%=query%></td>
+                                <td class="text-wrap"><%=aiGenResponse%></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-success shadow-sm" onclick="copyToClipboard(this)">Copy</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to copy the text from the second column to clipboard with tooltip feedback
+    function copyToClipboard(button) {
+        const row = button.closest('tr'); // Get the closest <tr> of the clicked button
+        const secondColumnText = row.querySelector('td:nth-child(2)').innerText; // Get text from the second column
+
+        // Copy the text to clipboard
+        navigator.clipboard.writeText(secondColumnText)
+            .then(() => {
+                console.log('Text copied to clipboard!');
+
+                // Change button text to 'Copied'
+                button.innerText = 'Copied';
+
+                // Optionally, reset the text after 2 seconds
+                setTimeout(() => {
+                    button.innerText = 'Copy';  // Reset the button text
+                }, 2000);  // Reset after 2 seconds
+            })
+            .catch(err => {
+                console.error('Error copying text: ', err);
+            });
+    }
+</script>

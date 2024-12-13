@@ -1,0 +1,69 @@
+<div class="content-wrapper">
+    <div class="page-header">
+      <h3 class="page-title">
+        <span class="page-title-icon bg-gradient-primary text-white me-2">
+          <i class="mdi mdi-home"></i>
+        </span> Dashboard
+      </h3>
+      <nav aria-label="breadcrumb">
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item active" aria-current="page">
+            <span></span>Overview <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="row">
+      <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-danger card-img-holder text-white">
+          <div class="card-body">
+            <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+            <h4 class="font-weight-normal mb-3">Query Searched <i class="mdi mdi-chart-line mdi-24px float-end"></i>
+            </h4>
+            <h2 class="mb-5"># <%= user.paa.length%></h2>
+            <h6 class="card-text">Total counts</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-info card-img-holder text-white">
+          <div class="card-body">
+            <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+            <h4 class="font-weight-normal mb-3">OpenAI apiKey <i class="mdi mdi-bookmark-outline mdi-24px float-end"></i>
+            </h4>
+            <h2 class="mb-5"><%=user.openAiKey ? 'Active' : 'Pending'%></h2>
+            <!-- <h6 class="card-text">
+              <%= user.openAiKey ? new Date() : 'Please configure your OpenAI key in the settings!' %>
+            </h6> -->
+            <h6 class="card-text">
+              <%= user.openAiKey ? new Date().toLocaleString() : 'Please configure your OpenAI key!' %>
+            </h6>
+            <% if (!user.openAiKey) { %>
+              <button class="btn btn-sm btn-light border border-white rounded rounded-5 shadow shadow-sm " onclick="window.open('/my-profile', '_blank')">Configure API Key</button>
+            <% } %>
+          </div>
+        </div>
+      </div>     
+      <div class="col-md-4 stretch-card grid-margin">
+        <div class="card bg-gradient-success card-img-holder text-white">
+          <div class="card-body">
+            <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+            <h4 class="font-weight-normal mb-3">MembershipType <i class="mdi mdi-diamond mdi-24px float-end"></i>
+            </h4>
+            <h2 class="mb-5">
+              <%= user.subscriptions?.[0]?.plan?.title || 'Trial' %>
+            </h2>
+            <h6 class="card-text">
+              <%= (user.subscriptions && user.subscriptions.length> 0 && user.subscriptions[0].startDate)
+                ? 'Validity - Till ' + user.subscriptions[0].endDate.toLocaleString('en-IN', { year: 'numeric', month: 'long', day:
+                'numeric' })
+                : 'Free plan with limited searches'
+                %>
+
+            </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>

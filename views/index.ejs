@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title><%=page%></title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="/assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/assets/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="/assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/assets/vendors/font-awesome/css/font-awesome.min.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="/assets/vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="/assets/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="/assets/images/favicon.png" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <style>
+      
+      .overlay {
+          position: fixed; /* Position it relative to the viewport */
+          top: 0; /* Align to the top */
+          left: 0; /* Align to the left */
+          width: 100%; /* Full width */
+          height: 100%; /* Full height */
+          background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+          display: flex; /* Use flexbox to center the loader */
+          justify-content: center; /* Center horizontally */
+          align-items: center; /* Center vertically */
+          z-index: 1000; /* Ensure it's above other content */
+      }
+  
+      .loader {
+          width: 32px;
+          height: 90px;
+          margin: 20px auto;
+          position: relative;
+          border-radius: 50% 50% 0 0;
+          border-bottom: 10px solid #FF3D00;
+          background-color: #FFF;
+          background-image: radial-gradient(ellipse at center, #FFF 34%, #FF3D00 35%, #FF3D00 54%, #FFF 55%), linear-gradient(#FF3D00 10px, transparent 0);
+          background-size: 28px 28px;
+          background-position: center 20px, center 2px;
+          background-repeat: no-repeat;
+          box-sizing: border-box;
+          animation: animloaderBack 1s linear infinite alternate;
+      }
+  
+      .loader::before {
+          content: '';
+          box-sizing: border-box;
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 64px;
+          height: 100%;
+          border-radius: 50%;
+          box-shadow: 0px 15px #FF3D00 inset;
+          top: 67px;
+      }
+  
+      .loader::after {
+          content: '';
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%) rotate(45deg);
+          width: 34px;
+          height: 34px;
+          top: 112%;
+          background: radial-gradient(ellipse at center, #ffdf00 8%, rgba(249, 62, 0, 0.6) 24%, rgba(0, 0, 0, 0) 100%);
+          border-radius: 50% 50% 0;
+          background-repeat: no-repeat;
+          background-position: -44px -44px;
+          background-size: 100px 100px;
+          box-shadow: 4px 4px 12px 0px rgba(255, 61, 0, 0.5);
+          box-sizing: border-box;
+          animation: animloader 1s linear infinite alternate;
+      }
+  
+      @keyframes animloaderBack {
+          0%, 30%, 70% {
+              transform: translateY(0px);
+          }
+          20%, 40%, 100% {
+              transform: translateY(-5px);
+          }
+      }
+  
+      @keyframes animloader {
+          0% {
+              box-shadow: 4px 4px 12px 2px rgba(255, 61, 0, 0.75);
+              width: 34px;
+              height: 34px;
+              background-position: -44px -44px;
+              background-size: 100px 100px;
+          }
+          100% {
+              box-shadow: 2px 2px 8px 0px rgba(255, 61, 0, 0.5);
+              width: 30px;
+              height: 28px;
+              background-position: -36px -36px;
+              background-size: 80px 80px;
+          }
+      }
+  </style>
+  
+   
+  </head>
+  <body>
+    <div class="overlay" id="loaderOverlay">
+      <span class="loader" id="loader"></span>
+    </div>
+    
+    <div class="container-scroller">
+      <!-- partial:partials/_navbar.html -->
+      <%- include('partials/navbar') %>
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <%- include('partials/sidebar') %>
+        <!-- partial -->
+        <div class="main-panel">
+
+          <% if (page === 'dashboard') { %>
+            <%- include('dashboard') %>
+
+          <% } else if (page === 'myprofile') { %>
+            <%- include('myprofile') %>
+
+          <% } else if (page === 'myPackage') { %>
+            <%- include('myPackage') %>
+
+          <% } else if (page === 'explorePlans') { %>
+            <%- include('explorePlans') %>
+
+          <% } else if (page === 'searchQuery') { %>
+              <%- include('searchQuery') %>
+          
+          <% } else if (page === 'exploreQuery') { %>
+              <%- include('exploreQuery') %>
+  
+          <% } else if (page === 'aiGenResponse') { %>
+            <%- include('aiGenResponse') %>
+
+          <% } else if (page === 'billingCycle') { %>
+            <%- include('billingCycle') %>
+
+          <% } else if (page === 'exploreLayers') { %>
+            <%- include('exploreLayers') %>
+
+          <% } else if (page === 'ai') { %>
+            <%- include('ai') %>
+              
+          <% } else { %>
+            <p>Page not found</p>
+          <% } %>
+          
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          <%- include('partials/footer') %>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="/assets/vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="/assets/vendors/select2/select2.min.js"></script>
+    <script src="/assets/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="/assets/js/off-canvas.js"></script>
+    <script src="/assets/js/misc.js"></script>
+    <script src="/assets/js/settings.js"></script>
+    <script src="/assets/js/todolist.js"></script>
+    <script src="/assets/js/jquery.cookie.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="/assets/js/file-upload.js"></script>
+    <script src="/assets/js/typeahead.js"></script>
+    <script src="/assets/js/select2.js"></script>
+    <!-- End custom js for this page -->
+
+    <script>
+      // Function to show the loader and hide the main content
+      function showLoader() {
+        document.getElementById('loaderOverlay').style.display = 'flex'; // Use flex to center the loader
+        document.querySelector('.container-scroller').style.display = 'none'; // Hide the main content
+      }
+
+      // Function to hide the loader and show the main content
+      function hideLoader() {
+        document.getElementById('loaderOverlay').style.display = 'none'; // Hide the loader
+        document.querySelector('.container-scroller').style.display = 'block'; // Show the main content
+      }
+
+      // Example of usage
+      function fetchData() {
+        showLoader(); // Show the loader
+
+        // Simulate a delay for data fetching (e.g., API call)
+        setTimeout(() => {
+          console.log('Data fetched successfully!'); // Example success message
+          hideLoader(); // Hide the loader after fetching data
+        }, 2000); // Simulates a 2-second loading time
+      }
+
+      // Call the fetchData function when the window loads
+      window.onload = function () {
+        fetchData();
+      };
+      document.addEventListener('copy', function (e) {
+        // Get the selected text
+        let selection = window.getSelection();
+        let text = selection.toString(); // Get only the plain text
+
+        // Prevent the default copy behavior (copying with HTML)
+        e.preventDefault();
+
+        // Use the Clipboard API to write plain text to the clipboard
+        if (e.clipboardData) {
+          e.clipboardData.setData('text/plain', text); // Set the clipboard data to the plain text
+        } else if (window.clipboardData) { // For older IE versions
+          window.clipboardData.setData('Text', text);
+        }
+      });
+
+    </script>
+  </body>
+</html>

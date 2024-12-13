@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="An interactive, collapsible hierarchy tree visualization with a creative UI for data display, built using D3.js.">
+    <title>Interactive Hierarchy Tree Visualization | D3.js</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        /* Fullscreen layout */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #ffffff;
+        }
+
+        /* Brand Name */
+        .brand-name {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            color: #333;
+            background-color: #FEAF62;
+            font-family: teko;
+        }
+
+        /* Accessible, animated nodes */
+        .node {
+            cursor: pointer;
+        }
+
+        .node circle {
+            fill: #FFFF00;
+            stroke: #fff0f0;
+            stroke-width: 3px;
+            transition: transform 0.2s, fill 0.2s;
+        }
+
+        .node text {
+            font-size: 1em;
+            font-weight: 600;
+            fill: #333;
+
+            white-space: normal;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        /* Styling for root and parent nodes */
+        .parent-text {
+            font-size: 1.2em;
+
+            white-space: normal;
+            overflow-wrap: break-word;
+            hyphens: auto;
+        }
+
+        /* Links between nodes */
+        .link {
+            fill: none;
+            stroke: #e6e6e6;
+            stroke-width: 2px;
+            stroke-dasharray: 3;
+            transition: stroke 0.2s;
+        }
+
+        /* Hover effects */
+        .node:hover circle {
+            fill: #4CAF50;
+            transform: scale(1.1);
+        }
+
+        .node:hover text {
+            fill: #ff0000;
+        }
+
+        /* Responsive font adjustment */
+        @media (max-width: 768px) {
+            .parent-text {
+                font-size: 1em;
+            }
+
+            .node text {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+
+<body id="body">
+
+    <div class="brand-name">
+        <a href="<%= typeof auth !== 'undefined' && auth ? '/searchQuestion' : '/' %>" style="color: #dc3545; font-weight: bold; text-decoration: none;" target="_blank">Search 🏹</a>
+        <b style="color: #ffffff;">AlsoAskExplorer <button id="pngBtn"
+            style="background-color: #37CC8D; box-shadow: inset; color: black; font-weight: bold; padding: 5px; border: 5px solid black ; border-radius: 10px ;">
+            <i class="fa-solid fa-image"></i>
+        </button> </b>
+        <!-- <button id="pngBtn"
+            style="background-color: #37CC8D; box-shadow: inset; color: black; font-weight: bold; padding: 5px; border: 5px solid black ; border-radius: 10px ;">
+            <i class="fa-solid fa-image"></i>
+        </button> -->
+        <!-- <button onclick="window.close();"
+            style="background-color: black; box-shadow: inset; color: white; font-weight: bold; padding: 5px; border: 5px solid white ; border-radius: 10px ;">Close
+            Tab ⬅️</button> -->
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js"></script>
+    <script>
+        /* Sample data structure for dynamic tree visualization */
+        var treeData = {
+            name: "<%=node%>",
+            children: [
+                {
+                    name: "<%=questions[0].question%>",
+                    children: [
+                        { name: "<%=questions[0].nested[0]%>" },
+                        { name: "<%=questions[0].nested[1]%>" },
+                        { name: "<%=questions[0].nested[2]%>" },
+                        { name: "<%=questions[0].nested[3]%>" },
+                    ]
+                },
+                {
+                    name: "<%=questions[1].question%>",
+                    children: [
+                        { name: "<%=questions[1].nested[0]%>" },
+                        { name: "<%=questions[1].nested[1]%>" },
+                        { name: "<%=questions[1].nested[2]%>" },
+                        { name: "<%=questions[1].nested[3]%>" },
+                    ]
+                },
+                {
+                    name: "<%=questions[2].question%>",
+                    children: [
+                        { name: "<%=questions[2].nested[0]%>" },
+                        { name: "<%=questions[2].nested[1]%>" },
+                        { name: "<%=questions[2].nested[2]%>" },
+                        { name: "<%=questions[2].nested[3]%>" },
+                    ]
+                },
+                {
+                    name: "<%=questions[3].question%>",
+                    children: [
+                        { name: "<%=questions[3].nested[0]%>" },
+                        { name: "<%=questions[3].nested[1]%>" },
+                        { name: "<%=questions[3].nested[2]%>" },
+                        { name: "<%=questions[3].nested[3]%>" },
+                    ]
+                }
+            ]
+        };
+
+        /* Dynamic sizing for responsive display */
+        var margin = { top: 40, right: 90, bottom: 50, left: 90 },
+            width = window.innerWidth - margin.left - margin.right,
+            height = window.innerHeight - margin.top - margin.bottom;
+
+        /* Setup for D3.js SVG tree */
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", window.innerWidth)
+            .attr("height", window.innerHeight)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var i = 0,
+            duration = 750,
+            root;
+
+        var treemap = d3.tree().size([height, width]);
+
+        /* Prepare and collapse nodes */
+        root = d3.hierarchy(treeData, function (d) { return d.children; });
+        root.x0 = height / 2;
+        root.y0 = 0;
+        root.children.forEach(collapse);
+
+        update(root);
+
+        function collapse(d) {
+            if (d.children) {
+                d._children = d.children;
+                d._children.forEach(collapse);
+                d.children = null;
+            }
+        }
+
+        function update(source) {
+            var treeData = treemap(root);
+            var nodes = treeData.descendants(),
+                links = treeData.descendants().slice(1);
+
+            nodes.forEach(function (d) { d.y = d.depth * (width / (root.height + 1)); });
+
+            var node = svg.selectAll("g.node").data(nodes, function (d) { return d.id || (d.id = ++i); });
+
+            /* Enter new nodes */
+            var nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function (d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+                .on("click", click);
+
+            /* Node circle */
+            nodeEnter.append("circle")
+                .attr("r", 12)
+                .style("fill", function (d) { return d._children ? "#FF5722" : "#FF9800"; });
+
+            /* Node label text */
+            nodeEnter.append("text")
+                .attr("dy", ".35em")
+                .attr("x", function (d) { return d._children ? -15 : 15; })
+                .attr("class", function (d) { return d._children ? "parent-text" : "child-text"; })
+                .attr("text-anchor", function (d) { return d._children ? "end" : "start"; })
+                .text(function (d) { return d.data.name; });
+
+            var nodeUpdate = nodeEnter.merge(node);
+            nodeUpdate.transition()
+                .duration(duration)
+                .attr("transform", function (d) { return "translate(" + d.y + "," + d.x + ")"; });
+
+            /* Exit nodes */
+            var nodeExit = node.exit().transition()
+                .duration(duration)
+                .attr("transform", function (d) { return "translate(" + source.y + "," + source.x + ")"; })
+                .remove();
+
+            /* Add links */
+            var link = svg.selectAll("path.link").data(links, function (d) { return d.id; });
+
+            var linkEnter = link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", function (d) {
+                    var o = { x: source.x0, y: source.y0 };
+                    return diagonal(o, o);
+                });
+
+            var linkUpdate = linkEnter.merge(link);
+            linkUpdate.transition()
+                .duration(duration)
+                .attr("d", function (d) { return diagonal(d, d.parent); });
+
+            var linkExit = link.exit().transition()
+                .duration(duration)
+                .attr("d", function (d) {
+                    var o = { x: source.x, y: source.y };
+                    return diagonal(o, o);
+                })
+                .remove();
+
+            nodes.forEach(function (d) { d.x0 = d.x; d.y0 = d.y; });
+
+            function diagonal(s, d) {
+                return `M ${s.y} ${s.x}
+                    C ${(s.y + d.y) / 2} ${s.x},
+                      ${(s.y + d.y) / 2} ${d.x},
+                      ${d.y} ${d.x}`;
+            }
+
+            function click(d) {
+                if (d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                } else {
+                    d.children = d._children;
+                    d._children = null;
+                }
+                update(d);
+            }
+        }
+
+        /* Resize event for responsive design */
+        window.addEventListener('resize', () => {
+            width = window.innerWidth - margin.left - margin.right;
+            height = window.innerHeight - margin.top - margin.bottom;
+            svg.attr("width", window.innerWidth).attr("height", window.innerHeight);
+            treemap.size([height, width]);
+            update(root);
+        });
+
+        // Download table as PNG
+        document.getElementById("pngBtn").addEventListener("click", function () {
+            html2canvas(document.getElementById("body")).then(function (canvas) {
+                const link = document.createElement("a");
+                link.href = canvas.toDataURL("image/png");
+                link.download = "table.png";
+                link.click();
+            });
+        });
+
+
+        // Helper function to wrap text
+        function wrapText(text, width) {
+            text.each(function () {
+                var text = d3.select(this),
+                    words = text.text().split(/\s+/).reverse(),
+                    word,
+                    line = [],
+                    lineNumber = 0,
+                    lineHeight = 1.1, // ems
+                    y = text.attr("y"),
+                    dy = parseFloat(text.attr("dy")) || 0,
+                    tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+
+                while (word = words.pop()) {
+                    line.push(word);
+                    tspan.text(line.join(" "));
+                    if (tspan.node().getComputedTextLength() > width) {
+                        line.pop();
+                        tspan.text(line.join(" "));
+                        line = [word];
+                        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                    }
+                }
+            });
+        }
+
+        // Modify nodeEnter to include the wrapText function
+        nodeEnter.append("text")
+            .attr("dy", ".35em")
+            .attr("x", function (d) { return d._children ? -15 : 15; })
+            .attr("class", function (d) { return d._children ? "parent-text" : "child-text"; })
+            .attr("text-anchor", function (d) { return d._children ? "end" : "start"; })
+            .text(function (d) { return d.data.name; })
+            .call(wrapText, 80); // Adjust '80' based on desired line length
+
+    </script>
+</body>
+
+</html>

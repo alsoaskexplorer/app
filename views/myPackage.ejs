@@ -1,0 +1,58 @@
+<div class="content-wrapper">
+  <div class="page-header">
+    <h3 class="page-title"> Subscription Card </h3>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Tables</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Basic tables</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="row">
+
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title"> Active subscription Information </h4>
+          <p class="card-description">
+            Activated to
+            <code><%= subscription && subscription.plan ? subscription.plan.title : 'Trial Period' %></code>
+          </p>
+          <div class="overflow-auto">
+            <table class="table table-bordered">
+              <thead>
+                <tr class="table-secondary">
+                  <th> Activation Date</th>
+                  <th> Expiration Date </th>
+                  <th> Subscription Type </th>
+                  <th> Included Features </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <% if (subscription) { %>
+                    <td>
+                      <%= subscription.startDate ? subscription.startDate.toLocaleDateString('en-IN', { year: 'numeric'
+                        , month: 'long' , day: 'numeric' }) : '' %>
+                    </td>
+                    <td>
+                      <%= subscription.endDate ? subscription.endDate.toLocaleDateString('en-IN', { year: 'numeric' ,
+                        month: 'long' , day: 'numeric' }) : '' %>
+                    </td>
+                    <td><label class="badge badge-success">
+                        <%= subscription.plan && subscription.plan.title ? subscription.plan.title : '' %>
+                      </label></td>
+                    <td>
+                      <%= subscription.plan && subscription.plan.description ? subscription.plan.description : '' %>
+                    </td>
+                    <% } %>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

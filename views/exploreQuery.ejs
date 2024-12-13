@@ -1,0 +1,271 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+SANS:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+   td,
+   li {
+      font-family: "roboto";
+      font-weight: 400;
+      font-style: normal;
+   }
+
+   ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+   }
+</style>
+<div class="content-wrapper">
+   <div class="page-header">
+      <h3 class="page-title"> Find what People Asked </h3>
+      <nav aria-label="breadcrumb">
+         <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Tables</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Basic tables</li>
+         </ol>
+      </nav>
+   </div>
+   <div class="row">
+      <div class="col-lg-12 grid-margin stretch-card">
+         <div class="card">
+            <div class="card-body">
+               <h4 class="card-title text-uppercase" style="font-family: teko; font-weight:700; color: black;">Alsoaskexplorer: Find What People Ask Most</h4>
+               <p class="card-description">
+                  <a href="/searchQuestion" class="btn btn-sm btn-dark" target="_blank">Search</a>
+                  <a href="/paa?keyword=<%=encodeURIComponent(node)%>&hl=<%=encodeURIComponent(hl)%>&gl=<%=encodeURIComponent(gl)%>&layer=d3"
+                     target="_blank" class="btn btn-sm btn-warning text-dark"
+                     data-bs-toggle="tooltip" data-bs-placement="top"
+                     title="View the Topical Tree Map of all 'People Also Asked' questions to explore hierarchical relationships and deeper insights"
+                     >
+                     <i class="fa-solid fa-folder-tree"></i>
+                  </a>
+                  <button id="pngBtn" class="btn btn-sm btn-success text-dark" 
+                     data-bs-toggle="tooltip" data-bs-placement="top"
+                     title="Export the visual representation of 'People Also Asked' data as an image for easy sharing and reporting"
+                  >
+                  <i class="fa-regular fa-image"></i></button>
+                  <button id="csvBtn" class="btn btn-sm btn-danger text-dark"
+                  data-bs-toggle="tooltip" data-bs-placement="top"
+                  title="Download 'People Also Asked' data in CSV format for further analysis and integration with your tools"
+                  ><i class="fa-solid fa-file-csv"></i></button>
+               </p>
+               <table id="myTable" class="table table-bordered">
+                  <thead>
+                     <tr class="table-secondary">
+                        <th style="font-family: teko; font-weight: 600; font-size: large;">Search Query </th>
+                        <th style="font-family: teko; font-weight: 600; font-size: large;">People Also Ask Questions</th>
+                        <th style="font-family: teko; font-weight: 600; font-size: large;" class="text-wrap text-center" data-bs-toggle="tooltip" data-bs-placement="top"
+                           title="This is an AI generated ANSwer by researching all the top 10 results from web">
+                           SEO<br>OPTIMISED<br>ANSWERS<br><i class="fa-solid fa-circle-info mt-2"></i>
+                        </th>
+                        <th style="font-family: teko; font-weight: 600; font-size: large;">Deeper Query Analysis</th>
+                        <th style="font-family: teko; font-weight: 600; font-size: large;" class="text-wrap text-center" data-bs-toggle="tooltip" data-bs-placement="top"
+                           title="This is an AI generated ANSwer by researching all the top 10 results from web">
+                           SEO<br>OPTIMISED<br>ANSWERS<br><i class="fa-solid fa-circle-info mt-2"></i>
+                        </th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <tr>
+                        <!-- Node -->
+                        <td class="text-wrap" rowspan="20">
+                           <%=node%>
+                        </td>
+                        <!-- Child 1 -->
+                        <td class="text-wrap">
+                           <ul class="text-wrap">
+                           <li><b>1)</b> <%=questions[0].question%></li>
+                           <li><b>2)</b> <%=questions[1].question%></li>
+                           <li><b>3)</b> <%=questions[2].question%></li>
+                           <li><b>4)</b> <%=questions[3].question%></li>
+                           </ul>
+                        </td>
+                  
+                        <!-- OpenAI -->
+                        <td>
+                           <a href="/get-aiGen-ANSwer/<%=node%>" class="btn btn-sm fw-bold"
+                              style="background-color: wheat;" target="_blank" 
+                              data-bs-toggle="tooltip" data-bs-placement="top"
+                              title="click here to generate the ANSwer for main query">
+                              <i class="fa-solid fa-user-astronaut"></i> <i class="fa-solid fa-magnifying-glass text-danger"></i>
+                           </a>
+                           <br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[0].question%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat;" target="_blank">ANS 1</a>
+                           <br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[1].question%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat;" target="_blank">ANS 2</a>
+                           <br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[2].question%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat;" target="_blank">ANS 3</a>
+                           <br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[3].question%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat;" target="_blank">ANS 4</a>
+                           </ul>
+                        </td>
+                        <!-- GrandChild -->
+                        <td class="grandchild">
+                            <ul class="text-wrap">
+                              <li><b>1.1)</b> <%=questions[0].nested[0]%></li>
+                              <li><b>1.2)</b> <%=questions[0].nested[1]%></li>
+                              <li><b>1.3)</b> <%=questions[0].nested[2]%></li>
+                              <li><b>1.4)</b> <%=questions[0].nested[3]%></li>
+                            </ul>
+                            
+                            <ul class="text-wrap mt-2">
+                              <li><b>2.1)</b> <%=questions[1].nested[0]%></li>
+                              <li><b>2.2)</b> <%=questions[1].nested[1]%></li>
+                              <li><b>2.3)</b> <%=questions[1].nested[2]%></li>
+                              <li><b>2.4)</b> <%=questions[1].nested[3]%></li>
+                            </ul>
+                            
+                            <ul class="text-wrap mt-2">
+                              <li><b>3.1)</b> <%=questions[2].nested[0]%></li>
+                              <li><b>3.2)</b> <%=questions[2].nested[1]%></li>
+                              <li><b>3.3)</b> <%=questions[2].nested[2]%></li>
+                              <li><b>3.4)</b> <%=questions[2].nested[3]%></li>
+                            </ul>
+
+                            <ul class="text-wrap mt-2">
+                              <li><b>4.1)</b> <%=questions[3].nested[0]%></li>
+                              <li><b>4.2)</b> <%=questions[3].nested[1]%></li>
+                              <li><b>4.3)</b> <%=questions[3].nested[2]%></li>
+                              <li><b>4.4)</b> <%=questions[3].nested[3]%></li>
+                            </ul>
+                          
+                        </td>
+                        <!-- OpenAI -->
+                        <td>
+                           <a href="/get-aiGen-ANSwer/<%=questions[0].nested[0]%>" class="btn btn-sm fw-bold"
+                              style="background-color: wheat" target="_blank">ANS 1.1</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[0].nested[1]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 1.2</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[0].nested[2]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 1.3</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[0].nested[3]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 1.4</a>
+                           <hr>
+                           <a href="/get-aiGen-ANSwer/<%=questions[1].nested[0]%>" class="btn btn-sm fw-bold"
+                              style="background-color: wheat" target="_blank">ANS 2.1</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[1].nested[1]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 2.2</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[1].nested[2]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 2.3</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[1].nested[3]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 2.4</a>
+                           <hr>
+                           <a href="/get-aiGen-ANSwer/<%=questions[2].nested[0]%>" class="btn btn-sm fw-bold"
+                              style="background-color: wheat" target="_blank">ANS 3.1</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[2].nested[1]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 3.2</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[2].nested[2]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 3.3</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[2].nested[3]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 3.4</a>
+                           <hr>
+                           <a href="/get-aiGen-ANSwer/<%=questions[3].nested[0]%>" class="btn btn-sm fw-bold"
+                              style="background-color: wheat" target="_blank">ANS 4.1</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[3].nested[1]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 4.2</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[3].nested[2]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 4.3</a><br>
+                           <a href="/get-aiGen-ANSwer/<%=questions[3].nested[3]%>" class="btn btn-sm fw-bold mt-1"
+                              style="background-color: wheat" target="_blank">ANS 4.4</a>
+                        </td>
+                     </tr>
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<script>
+   // Function to export table to CSV
+   //  function exportTableToCSV() {
+   //   let csvContent = "";
+   //   const rows = document.querySelectorAll("#myTable tr");
+
+   //   rows.forEach(row => {
+   //     const cols = row.querySelectorAll("th, td");
+   //     let rowData = Array.from(cols).map(col => `"${col.innerText}"`).join(",");
+   //     csvContent += rowData + "\r\n";
+   //   });
+
+   //   // Create a downloadable CSV file and trigger download
+   //   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+   //   const link = document.createElement("a");
+   //   link.href = URL.createObjectURL(blob);
+   //   link.download = "table.csv";
+   //   link.click();
+   // }
+
+   // // Attach the CSV download function to the button
+   // document.getElementById("csvBtn").addEventListener("click", exportTableToCSV);
+
+   // Function to export table to CSV, excluding the "SEO Optimised ANSwers" column
+   function exportTableToCSV() {
+      let csvContent = "";
+      const rows = document.querySelectorAll("#myTable tr");
+
+      rows.forEach(row => {
+         const cols = row.querySelectorAll("th, td");
+         let rowData = Array.from(cols)
+            .map((col, index) => {
+               // Exclude the "SEO Optimised ANSwers" columns
+               if (col.innerText.trim() === "SEO Optimised ANSwers" || index === 2 || index === 4) {
+                  return null;  // Skip this column
+               }
+               return `"${col.innerText}"`;
+            })
+            .filter(col => col !== null)  // Remove nulls from the array
+            .join(",");
+         csvContent += rowData + "\r\n";
+      });
+
+      // Create a downloadable CSV file and trigger download
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "table.csv";
+      link.click();
+   }
+
+   // Attach the CSV download function to the button
+   document.getElementById("csvBtn").addEventListener("click", exportTableToCSV);
+
+   // Download table as PNG
+   // document.getElementById("pngBtn").addEventListener("click", function () {
+   //   html2canvas(document.getElementById("myTable")).then(function (canvas) {
+   //     const link = document.createElement("a");
+   //     link.href = canvas.toDataURL("image/png");
+   //     link.download = "table.png";
+   //     link.click();
+   //   });
+   // });
+
+   // Download table as PNG, excluding "SEO Optimised ANSwers" columns
+   document.getElementById("pngBtn").addEventListener("click", function () {
+      // Temporarily hide the "SEO Optimised ANSwers" columns
+      const seoCols = document.querySelectorAll("#myTable th:nth-child(3), #myTable th:nth-child(5), #myTable td:nth-child(3), #myTable td:nth-child(5)");
+      seoCols.forEach(col => col.style.display = "none");
+
+      // Capture the table as an image
+      html2canvas(document.getElementById("myTable")).then(function (canvas) {
+         const link = document.createElement("a");
+         link.href = canvas.toDataURL("image/png");
+         link.download = "table.png";
+         link.click();
+
+         // Restore the "SEO Optimised ANSwers" columns
+         seoCols.forEach(col => col.style.display = "");
+      });
+   });
+
+</script>

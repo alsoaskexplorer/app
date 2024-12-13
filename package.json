@@ -1,0 +1,60 @@
+{
+  "name": "alsoaskexplorer",
+  "version": "1.0.0",
+  "description": "A web application for exploring and automating AlsoAsk query extraction with Express, Cheerio, and Razorpay integration.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": [
+    "web",
+    "explorer",
+    "alsoask",
+    "heroku",
+    "express",
+    "automation"
+  ],
+  "author": "Sandeep Kushwaha",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "cheerio": "^1.0.0",
+    "chromedriver": "^130.0.1",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-async-handler": "^1.2.0",
+    "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.1",
+    "express-validator": "^7.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.6.3",
+    "node-cache": "^5.1.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.15",
+    "playwright": "^1.48.2",
+    "puppeteer": "^23.7.1",
+    "razorpay": "^2.9.4",
+    "selenium-webdriver": "^4.25.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "engines": {
+    "node": "22.x",
+    "npm": "10.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamsandeepkushwaha/alsoaskexplorer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iamsandeepkushwaha/alsoaskexplorer/issues"
+  },
+  "homepage": "https://github.com/iamsandeepkushwaha/alsoaskexplorer#readme"
+}

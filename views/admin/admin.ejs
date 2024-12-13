@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Admin Panel</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="./assets/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="./assets/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="./assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="./assets/vendors/font-awesome/css/font-awesome.min.css">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <!-- End layout styles -->
+    <link rel="shortcut icon" href="./assets/images/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.min.css">
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center auth">
+          <div class="row flex-grow">
+            <div class="col-lg-12 mx-auto">
+              <div class="auth-form-light text-left p-5">
+                <div class="brand-logo">
+                  <h2 style="font-family: Teko; font-weight: 700; color: black;">AlsoAskExplorer Admin Panel</h2>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 stretch-card grid-margin">
+                    <div class="card bg-gradient-danger card-img-holder text-white">
+                      <div class="card-body">
+                        <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-3">Total subscriptions <i class="mdi mdi-chart-line mdi-24px float-end"></i>
+                        </h4>
+                        <h2 class="mb-5"># <%= totalSubscriptions %></h2>
+                        <h6 class="card-text">Total counts</h6>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 stretch-card grid-margin">
+                    <div class="card bg-gradient-info card-img-holder text-white">
+                      <div class="card-body">
+                        <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-3">Monthly subscriptions<i class="mdi mdi-bookmark-outline mdi-24px float-end"></i>
+                        </h4>
+                        <h2 class="mb-5"># <%= monthlySubscriptions %></h2>
+                        <h6 class="card-text">Total counts</h6>                        
+                      </div>
+                    </div>
+                  </div>     
+                  <div class="col-md-4 stretch-card grid-margin">
+                    <div class="card bg-gradient-success card-img-holder text-white">
+                      <div class="card-body">
+                        <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                        <h4 class="font-weight-normal mb-3">Lifetime subscriptions <i class="mdi mdi-diamond mdi-24px float-end"></i>
+                        </h4>
+                        <h2 class="mb-5"># <%= lifetimeSubscriptions %></h2>
+                        <h6 class="card-text">Total counts</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="errorMessages" class="alert alert-danger" style="display: none;"></div>
+                <table id="myTable" class="display table-bordered">
+                  <thead>
+                    <tr style="font-family: teko; background-color: #d4d4d4;">
+                      <th>SR. NO.</th>
+                      <th>NAME</th>
+                      <th>EMAIL</th>
+                      <th>PHONE</th>
+                      <th>OPENAIKEY</th>
+                      <th>DOB</th>
+                      <th>GENDER</th>
+                      <th>COUNTRY</th>
+                      <th>SUBSCRIPTION</th>
+                      <th>Send Email</th>
+                      <th>STARTDATE</th>
+                      <th>ENDDATE</th>
+                      <th>FREESEARCH LIMIT</th>
+                      <th>CLICK BUTTON TO CREDIT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% users.forEach((user, index) => { %>
+                      <tr class="text-wrap">
+                        <td><%= index+1 %></td>
+                        <td><%= user.name %></td>
+                        <td><%= user.email %></td>
+                        <td><%= user.phone || 'N/A' %></td>
+                        <td>
+                          <% if (user.openAiKey) { %>
+                            <a href="<%= user.openAiKey %>" target="_blank" rel="noopener noreferrer">View</a>
+                          <% } else { %>
+                            N/A
+                          <% } %>
+                        </td>
+                        <td><%= user.dob ? user.dob.toISOString().split('T')[0] : 'N/A' %></td>
+                        <td><%= user.gender || 'N/A' %></td>
+                        <td><%= user.address?.country || 'N/A' %></td>
+                        <td>
+                          <% if (user.subscriptions.length > 0) { %>
+                            <%= user.subscriptions.map(subscription => subscription.plan?.title || 'No Title').join(', ') %>
+                          <% } else { %>
+                            Free
+                          <% } %>
+                        </td>
+                        <td>
+                          <% if (user.subscriptions.length > 0) { %>
+                            Active
+                          <% } else { %>
+                            <button class="btn btn-md btn-gradient-primary shadow-sm" onclick="mailToUser(event, '<%= user.email %>', '<%= user.name %>')">SEND</button>
+                          <% } %>
+                        </td>
+                        <td><%= user.subscriptions[0]?.startDate || 'N/A' %></td>
+                        <td><%= user.subscriptions[0]?.endDate || 'N/A' %></td>
+                        <td>
+                          <input id="limitInput-<%= user.email %>" class="form-control" value="<%= user.limit || 'N/A' %>" type="number" style="font-size: large;">
+                        </td>
+                        <td>
+                          <button class="btn btn-md btn-gradient-primary shadow-sm" onclick="creditLimit(event, '<%= user.email %>', document.getElementById('limitInput-<%= user.email %>').value)">CREDIT</button>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="./assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="./assets/js/off-canvas.js"></script>
+    <script src="./assets/js/misc.js"></script>
+    <script src="./assets/js/settings.js"></script>
+    <script src="./assets/js/todolist.js"></script>
+    <script src="./assets/js/jquery.cookie.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
+    <script>let table = new DataTable('#myTable');</script>
+    <script>
+      function creditLimit(event, userEmail, newLimit) {
+        event.preventDefault();
+        const creditButton = event.target;
+        creditButton.disabled = true;
+        creditButton.innerText = 'Crediting...';
+
+        const currentLimit = parseInt(document.getElementById(`limitInput-${userEmail}`).value);
+        const amountToCredit = parseInt(newLimit);
+
+        if (isNaN(amountToCredit) || amountToCredit <= 0) {
+          alert('Please enter a valid number greater than zero to credit.');
+          creditButton.disabled = false;
+          creditButton.innerText = 'CREDIT';
+          return;
+        }
+
+        // const newTotalLimit = currentLimit + amountToCredit;
+        const newTotalLimit = currentLimit;
+
+        if (isNaN(newTotalLimit)) {
+          alert('Invalid number. Please enter a valid amount.');
+          creditButton.disabled = false;
+          creditButton.innerText = 'CREDIT';
+          return;
+        }
+
+        fetch('/credit-limit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: userEmail,
+            amount: amountToCredit,
+          }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            if (data.message === 'Limit credited successfully') {
+              alert('Limit credited successfully');
+              document.getElementById(`limitInput-${userEmail}`).value = newTotalLimit;
+            } else {
+              alert('Failed to credit limit. Please try again.');
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert('An error occurred while crediting the limit. Please try again.');
+          })
+          .finally(() => {
+            creditButton.disabled = false;
+            creditButton.innerText = 'CREDIT';
+          });
+      }
+
+      function mailToUser(event, userEmail, userName) {
+        event.preventDefault();
+        fetch('/send-promotion-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: userEmail, name: userName })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.message === 'Promotion email sent successfully. Please check your inbox.') {
+            alert('Email sent successfully!');
+          } else {
+            alert('Failed to send email. Please try again later.');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Error sending email.');
+        });
+      }
+    </script>
+  </body>
+</html>

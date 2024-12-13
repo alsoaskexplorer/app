@@ -1,0 +1,249 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.bootstrap5.css" />
+<div class="content-wrapper">
+  <div class="page-header">
+    <h3 class="page-title">Users Management</h3>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Tables</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          User Management
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title" style="font-family: teko; font-weight: 900; color: black;">MANAGE MEMBERS</h2>
+          <!-- <p class="card-description">Role <code>@admin</code></p> -->
+          <div id="errorMessages" class="alert alert-danger" style="display: none;"></div>
+          <table id="example" class="table table-striped" style="width: 100%">
+            <thead>
+              <tr style="font-family: teko;" class="table-dark">
+                <th>SR</th>
+                <th>NAME</th>
+                <th>EMAIL</th>
+                <th>PHONE</th>
+                <th>OPENAIKEY</th>
+                <th>DOB</th>
+                <th>GENDER</th>
+                <th>COUNTRY</th>
+                <th>SUBSCRIPTION</th>
+                <th>NOTIFY</th>
+                <th>STARTDATE</th>
+                <th>ENDDATE</th>
+                <th>FREESEARCH LIMIT</th>
+                <th>APPLY</th>
+                <th>ACCESS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% users.forEach((user, index)=> { %>
+                <tr class="text-wrap">
+                  <td>
+                    <%= index+1 %>
+                  </td>
+                  <td>
+                    <%= user.name %>
+                  </td>
+                  <td>
+                    <%= user.email %>
+                  </td>
+                  <td>
+                    <%= user.phone || 'N/A' %>
+                  </td>
+                  <td>
+                    <% if (user.openAiKey) { %>
+                      <a href="<%= user.openAiKey %>" target="_blank" rel="noopener noreferrer">View</a>
+                      <% } else { %> N/A <% } %>
+                  </td>
+                  <td>
+                    <%= user.dob ? user.dob.toISOString().split('T')[0] : 'N/A' %>
+                  </td>
+                  <td>
+                    <%= user.gender || 'N/A' %>
+                  </td>
+                  <td>
+                    <%= user.address?.country || 'N/A' %>
+                  </td>
+                  <td>
+                    <% if (user.subscriptions.length> 0) { %> <%= user.subscriptions.map(subscription=>
+                        subscription.plan?.title || 'No Title').join(', ') %> <% } else { %> Free <% } %>
+                  </td>
+                  <td>
+                    <% if (user.subscriptions.length> 0) { %> Active <% } else { %>
+                        <button class="btn btn-sm btn-dark shadow-sm"
+                          onclick="mailToUser(event, '<%= user.email %>', '<%= user.name %>')">
+                          <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <% } %>
+                  </td>
+                  <td>
+                    <%= user.subscriptions[0]?.startDate ? new Date(user.subscriptions[0]?.startDate).toLocaleDateString() : 'N/A' %>
+                  </td>
+                  <td>
+                    <%= user.subscriptions[0]?.endDate ? new Date(user.subscriptions[0]?.endDate).toLocaleDateString() : 'N/A' %>
+                  </td>
+
+                  <td>
+                    <input id="limitInput-<%= user.email %>" class="form-control" value="<%= user.limit || 'N/A' %>"
+                      type="number" style="font-size: large" />
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-dark shadow-sm"
+                      onclick="creditLimit(event, '<%= user.email %>', document.getElementById('limitInput-<%= user.email %>').value)">
+                      <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-dark shadow-sm"
+                      onclick="isActive(event, '<%= user.email %>')">
+                      <%= user.isActive %>
+                    </button>
+                  </td>
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
+
+<script>
+  function creditLimit(event, userEmail, newLimit) {
+    event.preventDefault();
+    const creditButton = event.target;
+    creditButton.disabled = true;
+    creditButton.innerText = 'Crediting...';
+
+    const currentLimit = parseInt(document.getElementById(`limitInput-${userEmail}`).value);
+    const amountToCredit = parseInt(newLimit);
+
+    if (isNaN(amountToCredit) || amountToCredit <= 0) {
+      alert('Please enter a valid number greater than zero to credit.');
+      creditButton.disabled = false;
+      creditButton.innerText = 'CREDIT';
+      return;
+    }
+
+    // const newTotalLimit = currentLimit + amountToCredit;
+    const newTotalLimit = currentLimit;
+
+    if (isNaN(newTotalLimit)) {
+      alert('Invalid number. Please enter a valid amount.');
+      creditButton.disabled = false;
+      creditButton.innerText = 'CREDIT';
+      return;
+    }
+
+    fetch('/credit-limit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: userEmail,
+        amount: amountToCredit,
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message === 'Limit credited successfully') {
+          alert('Limit credited successfully');
+          document.getElementById(`limitInput-${userEmail}`).value = newTotalLimit;
+        } else {
+          alert('Failed to credit limit. Please try again.');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('An error occurred while crediting the limit. Please try again.');
+      })
+      .finally(() => {
+        creditButton.disabled = false;
+        creditButton.innerText = 'CREDIT';
+      });
+  }
+
+  function mailToUser(event, userEmail, userName) {
+    event.preventDefault();
+    fetch('/send-promotion-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: userEmail, name: userName })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.message === 'Promotion email sent successfully. Please check your inbox.') {
+          alert('Email sent successfully!');
+        } else {
+          alert('Failed to send email. Please try again later.');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Error sending email.');
+      });
+  }
+</script>
+
+<script>
+  function isActive(event, userEmail) {
+    event.preventDefault();
+    const activeButton = event.target;
+    const currentStatus = activeButton.innerText.trim() === "true"; // Determine current state
+    const newStatus = !currentStatus; // Toggle the state
+
+    activeButton.disabled = true; // Disable the button during processing
+    activeButton.innerText = "Updating...";
+
+    fetch('/update-is-active', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: userEmail,
+        isActive: newStatus,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert('Status updated successfully!');
+          activeButton.innerText = newStatus; // Update button text
+        } else {
+          alert('Failed to update status. Please try again.');
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        alert('An error occurred while updating the status.');
+      })
+      .finally(() => {
+        activeButton.disabled = false; // Re-enable the button
+      });
+  }
+</script>
+
+
+<script>
+  // new DataTable('#example');
+  new DataTable("#example", {
+    scrollX: true,
+    // scrollY: true,
+    scrollY: '50vh'
+  });
+</script>
+
