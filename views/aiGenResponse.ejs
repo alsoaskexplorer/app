@@ -4,23 +4,21 @@
 <style>
     .table th,
     .table td {
-        vertical-align: middle;   /* Align content to the center */
-        padding: 1rem;             /* Adds space around text for better readability */
+        vertical-align: middle;
+        padding: 1rem;
         font-family: 'Roboto', sans-serif;
-        font-weight: 400;          /* Regular weight for clarity */
-        font-size: 16px;           /* Ideal for readability */
-        line-height: 1.6;          /* Adjusted line height for better spacing */
-        color: #333;               /* Dark text for contrast */
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #333;
     }
-
-    /* Optional: Adjust row spacing with padding or margin on tr */
     .table tr {
-        margin-bottom: 1em;        /* Space between rows */
+        margin-bottom: 1em;
     }
 </style>
 
-
 <div class="content-wrapper">
+    <!-- Page Header -->
     <div class="page-header">
         <h3 class="page-title">AI Generated Response</h3>
         <nav aria-label="breadcrumb">
@@ -30,29 +28,33 @@
             </ol>
         </nav>
     </div>
+
+    <!-- AI Generated Response Table -->
     <div class="row">
         <div class="col-lg-12 grid-margin stretch-card">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title text-uppercase" style="font-family: teko; font-weight:700; color: black;">Your SEO Optimised Answer</h4>
+                    <h4 class="card-title text-uppercase" style="font-family: Teko; font-weight: 700; color: black;">Your SEO Optimized Answer</h4>
                     <p class="card-description">
-                        <a href="/searchQuestion" class="btn btn-sm btn-primary shadow-sm" target="_blank"><i class="fa-solid fa-user-astronaut"></i> SearchQuestion</a>
-                        <a href="/get-aiGen-answer/<%=query%>" class="btn btn-sm btn-light shadow-sm" target="_blank"><i class="fa-solid fa-globe"></i> reGenerate</a>
+                        <a href="/searchQuestion" class="btn btn-sm btn-primary shadow-sm" target="_blank">
+                            <i class="fa-solid fa-user-astronaut"></i> Search Question
+                        </a>
+                        <a href="/get-aiGen-answer/<%= query %>" class="btn btn-sm btn-light shadow-sm" target="_blank">
+                            <i class="fa-solid fa-globe"></i> ReGenerate
+                        </a>
                     </p>
                     <table id="myTable" class="table table-bordered">
                         <thead>
-                            <tr>
-                        <thead>
                             <tr class="table-secondary">
-                                <th style="font-family: teko; font-weight: 600; font-size: large; color: black;">Question</th>
-                                <th style="font-family: teko; font-weight: 600; font-size: large; color: black;">AI Powered SEO Optimised Answer</th>
-                                <th style="font-family: teko; font-weight: 600; font-size: large; color: black;"><i class="fa-solid fa-copy"></i> Copy Answer</th>
+                                <th>Question</th>
+                                <th>AI Powered SEO Optimized Answer</th>
+                                <th><i class="fa-solid fa-copy"></i> Copy Answer</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="text-wrap"><%=query%></td>
-                                <td class="text-wrap"><%=aiGenResponse%></td>
+                                <td class="text-wrap"><%= query %></td>
+                                <td class="text-wrap"><%= aiGenResponse %></td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-success shadow-sm" onclick="copyToClipboard(this)">Copy</button>
                                 </td>
@@ -63,29 +65,141 @@
             </div>
         </div>
     </div>
+
+    <!-- WordPress Site Selection Form -->
+    <div class="row">
+        <div class="col-12 grid-margin">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Select WordPress Site</h4>
+                    <form id="loginForm" class="form-sample" method="POST">
+                        <p class="card-description">Choose the site to post your AI-generated content</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Site</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-select" name="wpsiteURL" required>
+                                            <% if (wpconfig && wpconfig.length > 0) { %>
+                                                <% wpconfig.forEach(site => { %>
+                                                    <option value="<%= site.url %>">
+                                                        <%= site.url %> (Username: <%= site.username %>)
+                                                    </option>
+                                                <% }); %>
+                                            <% } else { %>
+                                                <option value="">No WordPress sites configured</option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="submit" class="btn btn-primary" style="margin-left: 15px;">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- Button to Add WordPress Site -->
+                    <div class="mt-3">
+                        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addWPSiteModal">
+                            <i class="fa-solid fa-plus"></i> Add WordPress Site
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal to Add WordPress Site -->
+    <div class="modal fade" id="addWPSiteModal" tabindex="-1" aria-labelledby="addWPSiteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addWPSiteModalLabel">Add New WordPress Site</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="/wp-sites" method="POST">
+                        <div class="mb-3">
+                            <label for="siteUrl" class="form-label">Site URL</label>
+                            <input type="url" class="form-control" id="siteUrl" name="url" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="siteUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="siteUsername" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sitePassword" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="sitePassword" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Site</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Function to copy the text from the second column to clipboard with tooltip feedback
-    function copyToClipboard(button) {
-        const row = button.closest('tr'); // Get the closest <tr> of the clicked button
-        const secondColumnText = row.querySelector('td:nth-child(2)').innerText; // Get text from the second column
+    // JavaScript for handling form submission and copy-to-clipboard functionality
 
-        // Copy the text to clipboard
-        navigator.clipboard.writeText(secondColumnText)
-            .then(() => {
-                console.log('Text copied to clipboard!');
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent form submission
 
-                // Change button text to 'Copied'
-                button.innerText = 'Copied';
+        const formData = new FormData(form);
+        const wpsiteURL = formData.get('wpsiteURL'); // Selected site URL
+        console.log(wpsiteURL); // Log selected URL to ensure correct value
 
-                // Optionally, reset the text after 2 seconds
-                setTimeout(() => {
-                    button.innerText = 'Copy';  // Reset the button text
-                }, 2000);  // Reset after 2 seconds
-            })
-            .catch(err => {
-                console.error('Error copying text: ', err);
+        // Prepare dynamic content for the post
+        const data = {
+            title: "<%= query %>", // Inject dynamic title from EJS
+            content: "<%= aiGenResponse %>" // Inject dynamic content from EJS
+        };
+
+        try {
+            // Sending POST request to create the WordPress post with dynamic URL
+            const response = await fetch(`/wp-posts/${encodeURIComponent(wpsiteURL)}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
             });
+
+            const result = await response.json().catch(() => ({ message: 'Unexpected response from server.' }));
+
+            // Check if errors exist
+            let errors = result.errors;
+
+            if (Array.isArray(errors) && errors.length > 0) {
+                // Iterate over each error and alert the user
+                errors.forEach((error) => {
+                    alert(error.msg);
+                });
+            }
+
+            if (response.ok) {
+                // Redirect to dashboard or other success page
+                alert(result.message || 'Post created successfully!');
+            } else {
+                alert(result.message || 'Failed to post content');
+            }
+        } catch (error) {
+            // Handle any other errors (network issues, etc.)
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.');
+        }
+    });
+
+    // Copy-to-Clipboard Function
+    function copyToClipboard(button) {
+        const row = button.closest('tr');
+        const textToCopy = row.querySelector('td:nth-child(2)').innerText;
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                button.innerText = 'Copied';
+                setTimeout(() => button.innerText = 'Copy', 2000);
+            })
+            .catch(err => console.error('Error copying text: ', err));
     }
 </script>

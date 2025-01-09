@@ -8,11 +8,11 @@
     "dev": "nodemon app.js"
   },
   "keywords": [
-    "web",
-    "explorer",
+    "SEO Tool",
+    "People Also Ask Explorer",
     "alsoask",
-    "heroku",
-    "express",
+    "alsoaskexplorer",
+    "Web Scrapping",
     "automation"
   ],
   "author": "Sandeep Kushwaha",

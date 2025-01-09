@@ -58,52 +58,13 @@ app.use("/", require("./routes/authRoutes"));
 app.use("/", require("./routes/userRoutes"));
 app.use("/", require("./routes/subscriptionRoutes"));
 app.use("/", require("./routes/openaiRoutes"));
-// const paaRoutes = require('./routes/paaRoutes');
-// app.use(paaRoutes);
 app.use("/", require('./routes/paaRoutes'));
+app.use("/", require('./routes/wpRoutes'));
 
+// Admin routes
 app.use("/", require("./routes/adminRoutes"));
 
-// Creating a cron job which runs on every 10 second
-// cron.schedule("0 0 * * *", async function() {
-// cron.schedule("*/10 * * * * *", async function() {
-//     console.log("Running a task every 10 seconds");
-
-//     try {
-//         const today = new Date();
-//         today.setHours(0, 0, 0, 0); // Set time to 00:00 to compare only the date part
-
-//         // Find all subscriptions where the endDate is today or in the past and are active
-//         const subscriptions = await CronSubscription.find({
-//             endDate: { $lte: today },
-//             active: true,
-//         });
-
-//         console.log("Subscriptions found:", subscriptions);
-
-//         if (subscriptions.length > 0) {
-//             // Update each subscription's active status to false and mark as expired
-//             await Promise.all(subscriptions.map(async (subscription) => {
-//                 subscription.active = false;
-//                 subscription.status = 'expired'; // Optionally update the status
-//                 await subscription.save();
-//             }));
-
-//             console.log(`Updated ${subscriptions.length} subscriptions.`);
-//             return subscriptions.length; // Returning the number of updated subscriptions
-//         }
-
-//         console.log("No subscriptions to update.");
-//         return 0; // No subscriptions to update
-
-//     } catch (error) {
-//         console.error("Error during cron job:", error);
-//     }
-// });
-
-// cron.schedule("*/10 * * * * *", async function () {
-//     console.log("Running a task every 10 seconds");
-
+//Cron Schedule For Subscription Controlling
 cron.schedule("0 0 * * *", async function () {  // Runs once every day at midnight
     console.log("Running a task every day at midnight");
 

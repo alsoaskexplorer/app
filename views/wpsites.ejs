@@ -1,0 +1,118 @@
+<div class="content-wrapper">
+  <!-- Page Header -->
+  <div class="page-header">
+     <h3 class="page-title">WordPress Sites</h3>
+     <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+           <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+           <li class="breadcrumb-item active" aria-current="page">WordPress Sites</li>
+        </ol>
+     </nav>
+  </div>
+  <!-- Form to Add WordPress Site -->
+  <div class="row">
+     <div class="col-12 grid-margin">
+        <div class="card">
+           <div class="card-body">
+              <h4 class="card-title">Add WordPress Site</h4>
+              <form action="/wp-sites" method="POST">
+                 <div class="row">
+                    <div class="col-md-4">
+                       <div class="form-group">
+                          <label for="url">URL</label>
+                          <input type="url" class="form-control" id="url" name="url" placeholder="Enter site URL" required />
+                       </div>
+                    </div>
+                    <div class="col-md-4">
+                       <div class="form-group">
+                          <label for="username">Username</label>
+                          <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required />
+                       </div>
+                    </div>
+                    <div class="col-md-4">
+                       <div class="form-group">
+                          <label for="password">Password</label>
+                          <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required />
+                       </div>
+                    </div>
+                 </div>
+                 <button type="submit" class="btn btn-gradient-primary">Add Site</button>
+              </form>
+           </div>
+        </div>
+     </div>
+  </div>
+  <!-- Table to Display WordPress Sites -->
+  <div class="row mt-4">
+     <div class="col-12">
+        <div class="card">
+           <div class="card-body">
+              <h4 class="card-title">WordPress Sites</h4>
+              <!-- Display the list of WordPress sites -->
+              <!-- Table displaying WordPress sites -->
+              <table class="table table-bordered">
+                 <thead>
+                    <tr>
+                       <th>#</th>
+                       <th>URL</th>
+                       <th>Username</th>
+                       <th>Password</th>
+                       <th>Action</th>
+                    </tr>
+                 </thead>
+                 <tbody>
+                    <% if (configs.length > 0) { %>
+                    <% configs.forEach((site, index) => { %>
+                    <tr>
+                       <td><%= index + 1 %></td>
+                       <td><%= site.url %></td>
+                       <td><%= site.username %></td>
+                       <td><%= site.password %></td>
+                       <td>
+                          <!-- Delete Button with an onclick handler -->
+                          <button class="btn btn-danger delete-site-btn" data-site-id="<%= index %>">Delete</button>
+                       </td>
+                    </tr>
+                    <% }) %>
+                    <% } else { %>
+                    <tr>
+                       <td colspan="5" class="text-center">No WordPress sites found.</td>
+                    </tr>
+                    <% } %>
+                 </tbody>
+              </table>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+
+<script>
+  // Handle Delete Button Click
+  document.querySelectorAll('.delete-site-btn').forEach(button => {
+    button.addEventListener('click', function () {
+      const siteIndex = this.getAttribute('data-site-id'); // Get the site index from the button
+      const url = `/wp-sites/${siteIndex}`; // Construct the URL with the index
+
+      // Use fetch to send a DELETE request to the server
+      fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => {
+        if (response.ok) {
+          // On success, reload the page or update the table
+          window.location.reload(); // This will reload the page and show the updated list
+        } else {
+          alert('Failed to delete the site.');
+        }
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        alert('An error occurred while trying to delete the site.');
+      });
+    });
+  });
+</script>
